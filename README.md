@@ -1,20 +1,41 @@
-# Terraform Infrastructure as Code (IaC) - aws mfa Module
+# # 🏗️ Terraform-AWS-lb
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Usage](#usage)
-- [Module Inputs](#module-inputs)
-- [Module Outputs](#module-outputs)
-- [Authors](#authors)
-- [License](#license)
+[![OpsStation](https://img.shields.io/badge/Made%20by-OpsStation-blue?style=flat-square&logo=terraform)](https://www.opsstation.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Terraform](https://img.shields.io/badge/Terraform-1.13%2B-purple.svg?logo=terraform)](#)
+[![CI](https://github.com/OpsStation/terraform-aws-ec2/actions/workflows/ci.yml/badge.svg)](https://github.com/OpsStation/terraform-aws-ec2/actions/workflows/ci.yml)
 
-## Introduction
-This Terraform module creates structured mfa for aws resources with specific attributes.
+> 🌩️ **A production-grade, reusable AWS Ec2 module by [OpsStation](https://www.opsstation.com)**
+> Designed for reliability, performance, and security — following AWS networking best practices.
+---
 
-## Usage
+## 🏢 About OpsStation
 
-- Use the module by referencing its source and providing the required variables.
+**OpsStation** delivers **Cloud & DevOps excellence** for modern teams:
+- 🚀 **Infrastructure Automation** with Terraform, Ansible & Kubernetes
+- 💰 **Cost Optimization** via scaling & right-sizing
+- 🛡️ **Security & Compliance** baked into CI/CD pipelines
+- ⚙️ **Fully Managed Operations** across AWS, Azure, and GCP
 
+> 💡 Need enterprise-grade DevOps automation?
+> 👉 Visit [**www.opsstation.com**](https://www.opsstation.com) or email **hello@opsstation.com**
+
+---
+## 🌟 Features
+
+- ✅ Enables and manages **AWS Multi-Factor Authentication (MFA)** for IAM users
+- ✅ Supports both **virtual MFA devices** (Google Authenticator, Authy) and **hardware MFA tokens**
+- ✅ Automatically configures **MFA-enabled IAM policies** for secure access control
+- ✅ Supports **console login**, **CLI**, and **API-level** MFA authentication mechanisms
+- ✅ Integrates seamlessly with **IAM Users**, **IAM Groups**, and **IAM Roles**
+- ✅ Optional enforcement of **root account MFA** for maximum security
+- ✅ Supports **MFA-protected API operations** to prevent unauthorized sensitive actions
+- ✅ Enables tagging and naming conventions through the **Labels module**
+- ✅ Follows AWS best practices for **identity security**, **compliance**, and **least privilege**
+- ✅ Fully compatible with other **OpsStation Terraform IAM modules**
+---
+
+# Example : mfa
 ```hcl
 module "mfa" {
   source      = "git::https://github.com/opsstation/terraform-aws-mfa.git?ref=v1.0.0"
@@ -26,79 +47,27 @@ module "mfa" {
 }
 
 ```
-Please ensure you specify the correct 'source' path for the module.
+### 🔐 Outputs (AWS MFA Module)
 
-## Module Inputs
-
-- `name`: The name of the application.
-- `environment`: The environment (e.g., "test", "production").
-- `label_order`: Label order, e.g. `name`,`application`.
-- `enabled`: Flag to control the mfa creation.
-- `managedby`:  ManagedBy, eg 'opsstation'.
-- `floating_ip` : Boolean to control whether floating IPs should be created.
-
-## Module Outputs
-- This module currently does not provide any outputs.
-
-# Examples
-For detailed examples on how to use this module, please refer to the '[example](https://github.com/opsstation/terraform-aws-mfa/tree/master/example)' directory within this repository.
-
-## Authors
-Your Name
-Replace '[License Name]' and '[Your Name]' with the appropriate license and your information. Feel free to expand this README with additional details or usage instructions as needed for your specific use case.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/opsstation/terraform-aws-mfa/blob/master/LICENSE) file for details.
+| Name                      | Description                                                                           |
+|---------------------------|----------------------------------------------------------------------------------------|
+| `user_name`               | The **IAM user name** for whom MFA has been enabled.                                  |
+| `mfa_enabled`             | Shows whether **MFA is enabled** (`true/false`) for the user.                         |
+| `mfa_device_serial`       | The **serial number** of the assigned MFA device (virtual or hardware).               |
+| `mfa_device_type`         | The type of the MFA device (**virtual** or **hardware token**).                       |
+| `mfa_status`              | The current **status of MFA configuration** for the IAM user.                         |
+| `policy_arn`              | The ARN of the **MFA-enforced IAM policy** attached to the user.                      |
+| `attached_policies`       | A list of all **IAM policy ARNs** attached to the user for MFA enforcement.           |
+| `user_arn`                | The **ARN of the IAM user** with MFA enabled.                                         |
+| `login_profile_status`    | Indicates whether the **login profile** exists (`true/false`) for console access.     |
+| `access_key_status`       | Indicates whether the user’s **access keys** are active and MFA-protected.            |
+| `tags`                    | A mapping of **tags** assigned to the IAM user and MFA resources.                     |
 
 
+### ☁️ Tag Normalization Rules (AWS)
 
-<!-- BEGIN_TF_DOCS -->
-## Requirements
+| Cloud | Case      | Allowed Characters | Example                            |
+|--------|-----------|------------------|------------------------------------|
+| **AWS** | TitleCase | Any              | `Name`, `Environment`, `CostCenter` |
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.7.3 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.31.0 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.31.0 |
-
-## Modules
-
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_labels"></a> [labels](#module\_labels) | git::https://github.com/opsstation/terraform-aws-labels.git | v1.0.0 |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [aws_iam_group_policy_attachment.assign_force_mfa_policy_to_groups](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
-| [aws_iam_policy.enable_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
-| [aws_iam_user_policy_attachment.assign_force_mfa_policy_to_users](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_policy_attachment) | resource |
-| [aws_iam_policy_document.enable_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-
-## Inputs
-
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_environment"></a> [environment](#input\_environment) | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
-| <a name="input_groups"></a> [groups](#input\_groups) | enable MFA for the members in these groups | `list(string)` | `[]` | no |
-| <a name="input_label_order"></a> [label\_order](#input\_label\_order) | Label order, e.g. `name`,`application`. | `list(any)` | <pre>[<br>  "name",<br>  "environment"<br>]</pre> | no |
-| <a name="input_managedby"></a> [managedby](#input\_managedby) | ManagedBy, eg 'opsstation'. | `string` | `"opsstation"` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name  (e.g. `test` or `mfa`). | `string` | n/a | yes |
-| <a name="input_path"></a> [path](#input\_path) | The path of the policy in MFA. | `string` | `"/"` | no |
-| <a name="input_repository"></a> [repository](#input\_repository) | Terraform current module repo | `string` | `"https://github.com/opsstation/terraform-aws-mfa"` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(any)` | `{}` | no |
-| <a name="input_users"></a> [users](#input\_users) | enable MFA for these users | `list(string)` | `[]` | no |
-
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| <a name="output_iam-arn"></a> [iam-arn](#output\_iam-arn) | The ARN (Amazon Resource Name) of the IAM policy with MFA (Multi-Factor Authentication) enabled. |
-| <a name="output_tags_all"></a> [tags\_all](#output\_tags\_all) | All tags associated with the IAM policy with MFA enabled. |
-<!-- END_TF_DOCS -->
+---

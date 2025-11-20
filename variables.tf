@@ -9,11 +9,11 @@ variable "path" {
   description = "The path of the policy in MFA."
 }
 
-variable "tags" {
-  type        = map(any)
-  default     = {}
-  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
-}
+#variable "tags" {
+#  type        = map(any)
+#  default     = {}
+#  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
+#}
 
 variable "repository" {
   type        = string
