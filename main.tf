@@ -1,14 +1,20 @@
+#Module      : Labels
+#Description : Terraform module to create consistent naming for multiple names.
 module "labels" {
-  source = "git::https://github.com/opsstation/terraform-aws-labels.git?ref=v1.0.0"
-
+  source      = "opsstation/labels/multicloud"
+  version     = "1.0.0"
   name        = var.name
-  environment = var.environment
-  label_order = var.label_order
   repository  = var.repository
+  environment = var.environment
   managedby   = var.managedby
-  extra_tags  = var.tags
+  label_order = var.label_order
+  extra_tags = {
+    Owner      = "Sohan"
+    CostCenter = "Finance"
+  }
 }
 
+# Purpose     : This resource is used to create an IAM policy with standardized labels for security, compliance, and consistent tagging across AWS accounts.
 resource "aws_iam_policy" "enable_mfa" {
   name        = var.name
   path        = var.path
@@ -98,12 +104,14 @@ data "aws_iam_policy_document" "enable_mfa" {
   }
 }
 
+# Purpose     : Attaches an IAM policy to an IAM group with consistent labels.
 resource "aws_iam_group_policy_attachment" "assign_force_mfa_policy_to_groups" {
   count      = length(var.groups)
   group      = element(var.groups, count.index)
   policy_arn = aws_iam_policy.enable_mfa.arn
 }
 
+# Purpose     : Attaches an IAM policy to an IAM user with consistent labels.
 resource "aws_iam_user_policy_attachment" "assign_force_mfa_policy_to_users" {
   count      = length(var.users)
   user       = element(var.users, count.index)
